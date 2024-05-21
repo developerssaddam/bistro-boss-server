@@ -2,7 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const colors = require("colors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // Init express
 const app = express();
@@ -74,6 +74,14 @@ async function run() {
       const newCart = req.body;
       const result = await cartCollection.insertOne(newCart);
       res.status(201).send(result);
+    });
+
+    // Delete a cart
+    app.delete("/carts", async (req, res) => {
+      const id = req.query.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
     });
   } finally {
     // await client.close();
